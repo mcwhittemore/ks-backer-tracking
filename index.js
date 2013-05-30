@@ -85,10 +85,9 @@ var processAll = function(){
 	console.log("NUMBER OF RUNS:", num_runs);
 }
 
-processAll();
+setInterval(processAll, ten_min);
 /*
 
-//setInterval(processAll, 1000*5);
 
 var gitAddCommit = function(){
 	exec("git add .", function(err, stid, stout){
