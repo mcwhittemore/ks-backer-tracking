@@ -1,0 +1,15 @@
+{
+  "name": "ks-backer-tracking",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "kickstarter": "https://github.com/mcwhittemore/kickstarter-data/tarball/0.0.3"
+  },
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.1.x"
+  }
+}
