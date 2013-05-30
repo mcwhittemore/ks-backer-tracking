@@ -13,8 +13,24 @@ var num_git_push = 0;
 
 var projects = [
 	{
-		filename: "infragram.csv",
+		filename: "projects/infragram.csv",
 		url:"http://www.kickstarter.com/projects/publiclab/infragram-the-infrared-photography-project"
+	},
+	{
+		filename: "projects/telescope_arkyd.csv",
+		url: "http://www.kickstarter.com/projects/1458134548/arkyd-a-space-telescope-for-everyone-0"
+	},
+	{
+		filename: "projects/videogame_chalice.csv",
+		url: "http://www.kickstarter.com/projects/doublefine/double-fines-massive-chalice"
+	},
+	{
+		filename: "projects/short_stories_wc.csv",
+		url: "http://www.kickstarter.com/projects/1636124895/30-short-short-stories-about-white-castle"
+	},
+	{
+		filename: "projects/3D_printer_buccaneer.csv",
+		url: "http://www.kickstarter.com/projects/pirate3d/the-buccaneer-the-3d-printer-that-everyone-can-use"
 	}
 ];
 
@@ -39,8 +55,6 @@ var dpToRow = function(time, dp){
 	}
 
 	var out = row.join(",")+"\n";
-
-	console.log(dp);
 
 	return out;
 }
