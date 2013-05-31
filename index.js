@@ -11,37 +11,62 @@ var num_runs = 0;
 var num_git_add = 0;
 var num_git_push = 0;
 
-var projects = [
-	{
-		filename: "projects/infragram.csv",
-		url:"http://www.kickstarter.com/projects/publiclab/infragram-the-infrared-photography-project"
-	},
-	{
-		filename: "projects/telescope_arkyd.csv",
-		url: "http://www.kickstarter.com/projects/1458134548/arkyd-a-space-telescope-for-everyone-0"
-	},
-	{
-		filename: "projects/videogame_chalice.csv",
-		url: "http://www.kickstarter.com/projects/doublefine/double-fines-massive-chalice"
-	},
-	{
-		filename: "projects/short_stories_wc.csv",
-		url: "http://www.kickstarter.com/projects/1636124895/30-short-short-stories-about-white-castle"
-	},
-	{
-		filename: "projects/3D_printer_buccaneer.csv",
-		url: "http://www.kickstarter.com/projects/pirate3d/the-buccaneer-the-3d-printer-that-everyone-can-use"
-	},
-	{
-		filename: "projects/documentary_semi_serious.csv",
-		url: "http://www.kickstarter.com/projects/630664473/very-semi-serious"
-	},
-	{
-		filename: "projects/videogame_armikrog.csv",
-		url: "http://www.kickstarter.com/projects/1949537745/armikrog"
-	}
-];
+/*** ============================================================================ */
+/** =========================== PROJECT.INIT ACTIONS =========================== **/
+/* ============================================================================ ***/
 
+var project_file_name = "projects.json";
+
+var openProjects = function(){
+	var data = fs.readFileSync(project_file_name, 'utf8');
+	console.log("DATA", data);
+	return eval(JSON.parse(data));
+}
+
+var projects = openProjects();
+
+/*** ============================================================================ */
+/** ========================== PROJECT.UPDATE ACTIONS ========================== **/
+/* ============================================================================ ***/
+
+var saveProjects = function(){
+
+	var projects_str = JSON.stringify(projects, null, 4);
+
+	fs.writeFile(project_file_name, JSON.stringify(projects_str), function(err) {
+		console.log(err);
+	}); 
+}
+
+var find_new_projects = function(){
+
+}
+
+var update_project = function(i, project){
+	var project = new KS.project(project.url);
+	project.timeLeft(function(err, data){
+		if(data.timeLeft<=0){
+			project.isActive = false;
+		}
+		else{
+			project.isActive = true;
+		}
+		projects[i] = project;
+		saveProjects();
+	});
+}
+
+var update_projects = function(){
+	var i = projects.length;
+	while(i--){
+		update_project(i, projects[i]);
+	}
+	find_new_projects();
+}
+
+/*** ============================================================================ */
+/** =============================== SCRAP ACTIONS ============================== **/
+/* ============================================================================ ***/
 
 var dpToRow = function(time, dp){
 	var row = [time];
@@ -97,17 +122,22 @@ var processOne = function(filename, url){
 	});
 }
 
-
 var processAll = function(){
 	var i = projects.length;
 	while(i--){
-		processOne(projects[i].filename, projects[i].url)
+		if(projects[i].isActive || projects[i].isActive == undefined){
+			processOne(projects[i].filename, projects[i].url);
+		}
+		
 	}
 	num_runs++;
 	console.log("NUMBER OF RUNS:", num_runs);
 }
 
-setInterval(processAll, ten_min);
+/*** ============================================================================ */
+/** ================================ GIT ACTIONS =============================== **/
+/* ============================================================================ ***/
+
 /*
 
 
@@ -132,3 +162,13 @@ var gitAddCommit = function(){
 gitAddCommit();
 
 */
+
+/*** ============================================================================ */
+/** ============================= INTERVAL CONTROL ============================= **/
+/* ============================================================================ ***/
+
+setInterval(processAll, ten_min); //SCRAP DATA
+setInterval(update_projects, one_hour);
+
+
+
