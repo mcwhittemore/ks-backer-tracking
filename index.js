@@ -33,11 +33,11 @@ var projects = [
 		url: "http://www.kickstarter.com/projects/pirate3d/the-buccaneer-the-3d-printer-that-everyone-can-use"
 	},
 	{
-		filename: "documentary_semi_serious.csv",
+		filename: "projects/documentary_semi_serious.csv",
 		url: "http://www.kickstarter.com/projects/630664473/very-semi-serious"
 	},
 	{
-		filename: "videogame_armikrog.csv",
+		filename: "projects/videogame_armikrog.csv",
 		url: "http://www.kickstarter.com/projects/1949537745/armikrog"
 	}
 ];
