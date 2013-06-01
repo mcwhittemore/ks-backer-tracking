@@ -12,6 +12,14 @@ var num_git_add = 0;
 var num_git_push = 0;
 
 /*** ============================================================================ */
+/** ================================== HELPERS ================================= **/
+/* ============================================================================ ***/
+
+var error = function(where, err){
+	console.log("ERROR", where, err);
+}
+
+/*** ============================================================================ */
 /** =========================== PROJECT.INIT ACTIONS =========================== **/
 /* ============================================================================ ***/
 
@@ -19,7 +27,6 @@ var project_file_name = "projects.json";
 
 var openProjects = function(){
 	var data = fs.readFileSync(project_file_name, 'utf8');
-	console.log("DATA", data);
 	return eval(JSON.parse(data));
 }
 
@@ -34,7 +41,9 @@ var saveProjects = function(){
 	var projects_str = JSON.stringify(projects, null, 4);
 
 	fs.writeFile(project_file_name, JSON.stringify(projects_str), function(err) {
-		console.log(err);
+		if(err){
+			error("SAVE: "+project_file_name, err);
+		}
 	}); 
 }
 
@@ -43,8 +52,8 @@ var find_new_projects = function(){
 }
 
 var update_project = function(i, project){
-	var project = new KS.project(project.url);
-	project.timeLeft(function(err, data){
+	var ks_project = new KS.project(project.url);
+	ks_project.timeLeft(function(err, data){
 		if(data.timeLeft<=0){
 			project.isActive = false;
 		}
@@ -90,10 +99,6 @@ var dpToRow = function(time, dp){
 	var out = row.join(",")+"\n";
 
 	return out;
-}
-
-var error = function(where, err){
-	console.log("ERROR", where, err);
 }
 
 var save = function(filename, data){
@@ -166,6 +171,8 @@ gitAddCommit();
 /*** ============================================================================ */
 /** ============================= INTERVAL CONTROL ============================= **/
 /* ============================================================================ ***/
+
+processAll();
 
 setInterval(processAll, ten_min); //SCRAP DATA
 setInterval(update_projects, one_hour);
