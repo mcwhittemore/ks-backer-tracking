@@ -7,6 +7,8 @@ var one_min = 1000*60;
 var ten_min = one_min*10;
 var one_hour = one_min*60;
 
+var system_version = 0.0.3;
+
 var num_adds = 0;
 var num_runs = 0;
 var num_git_add = 0;
@@ -47,8 +49,6 @@ var add_project = function(filename, project){
 		newProject.goal = data.goal;
 		projects[filename] = newProject;
 		if(num_projects_pending==0){
-			num_adds++;
-			console.log("PROJECT LIST UPDATE: "+num_adds);
 			saveProjects();
 		}
 	});
@@ -57,6 +57,13 @@ var add_project = function(filename, project){
 var add_projects = function(newProjects){
 	var filenames = Object.keys(newProjects);
 	var i = filenames.length;
+
+	if(i>0){
+		console.log("ADDING "+i+" NEW PROJECTS");
+	}
+	else{
+		console.log("NO NEW PROJECTS TO ADD");
+	}
 
 	while(i--){
 		var filename = filenames[i];
@@ -168,6 +175,8 @@ var update_projects = function(){
 	}
 	var discover = new KS.discover().byGeneral("recentlyLaunched").projectUrl().project();
 	find_new_projects(discover, {});
+	num_adds++;
+	console.log("PROJECTS UPDATE: "+num_adds);
 }
 
 /*** ============================================================================ */
@@ -192,6 +201,7 @@ var dpToRow = function(time, pledged, dp){
 	}
 
 	row.push(pledged);
+	row.push(system_version);
 
 	var out = row.join(",")+"\n";
 
@@ -201,21 +211,26 @@ var dpToRow = function(time, pledged, dp){
 var saveCsv = function(filename, csvPath, data){
 	var time = Date.now();
 	var pledged = data.pledged;
-	var numDataPoints = data.rewards.length;
-	while(numDataPoints--){
-		var dp = data.rewards[numDataPoints];
 
-		if(projects[filename].rewards[dp._id]==undefined){
-			projects[filename].rewards[dp._id] = {started: Date.now(), desc:encodeURIComponent(dp.desc)};
-		}
-		
-		var row = dpToRow(time, pledged, dp);
+	if(projects[filename].pledged != pledged){
+		projects[filename].pledged = pledged;
 
-		fs.appendFile(csvPath, row, function(err){
-			if(err){
-				error("WRITE_TO_FILE", err);
+		var numDataPoints = data.rewards.length;
+		while(numDataPoints--){
+			var dp = data.rewards[numDataPoints];
+
+			if(projects[filename].rewards[dp._id]==undefined){
+				projects[filename].rewards[dp._id] = {started: Date.now(), desc:encodeURIComponent(dp.desc)};
 			}
-		});
+			
+			var row = dpToRow(time, pledged, dp);
+
+			fs.appendFile(csvPath, row, function(err){
+				if(err){
+					error("WRITE_TO_FILE", err);
+				}
+			});
+		}
 	}
 }
 
