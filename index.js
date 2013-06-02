@@ -6,7 +6,7 @@ var one_min = 1000*60;
 var ten_min = one_min*10;
 var one_hour = one_min*60;
 
-var system_version = 0.0.3;
+var system_version = "0.0.3";
 
 var num_adds = 0;
 var num_runs = 0;
@@ -292,7 +292,7 @@ update_projects();
 gitAddCommit();
 
 setInterval(processAll, ten_min); //SCRAP DATA
-setInterval(update_projects, one_hour);
-
+setInterval(update_projects, one_hour); //ADD PROJECTS
+setInterval(gitAddCommit, one_hour); //PUSH DATA TO GITHUB
 
 
