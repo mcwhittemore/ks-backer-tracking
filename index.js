@@ -1,7 +1,6 @@
 var KS = require("kickstarter");
 var fs = require("fs");
 var exec = require('child_process').exec;
-var sys = require('sys');
 
 var one_min = 1000*60;
 var ten_min = one_min*10;
@@ -11,7 +10,6 @@ var system_version = 0.0.3;
 
 var num_adds = 0;
 var num_runs = 0;
-var num_git_add = 0;
 var num_git_push = 0;
 
 /*** ============================================================================ */
@@ -265,30 +263,25 @@ var processAll = function(){
 /** ================================ GIT ACTIONS =============================== **/
 /* ============================================================================ ***/
 
-/*
-
-
 var gitAddCommit = function(){
-	exec("git add .", function(err, stid, stout){
-		console.log("GIT ADD", err);
-		sys.print(stid);
-		sys.print(stout);
+	exec("git add projects*", function(err, stid, stout){
+		if(err){
+			error("GIT_ADD_ERROR", err);
+		}
 		exec("git commit -m 'automatic update "+Date.now()+"'", function(err, stid, stout){
-			console.log("GIT COMMIT", err);
-			sys.print(stid);
-			sys.print(stout);
+			if(err){
+				error("GIT_COMMIT_ERROR", err);
+			}
 			exec("git push origin master", function(err, stid, stout){
-				console.log("GIT PUSH", err);
-				sys.print(stid);
-				sys.print(stout);
+				if(err){
+					error("GIT_PUSH_ERROR", err);
+				}
+				num_git_push++;
+				console.log("GIT PUSH: "+num_git_push);
 			});
 		});
 	});
 }
-
-gitAddCommit();
-
-*/
 
 /*** ============================================================================ */
 /** ============================= INTERVAL CONTROL ============================= **/
@@ -296,6 +289,7 @@ gitAddCommit();
 
 processAll();
 update_projects();
+gitAddCommit();
 
 setInterval(processAll, ten_min); //SCRAP DATA
 setInterval(update_projects, one_hour);
