@@ -1,7 +1,7 @@
 var KS = require("kickstarter");
 var fs = require("fs");
 var exec = require('child_process').exec;
-var sys = require('sys')
+var sys = require('sys');
 
 var one_min = 1000*60;
 var ten_min = one_min*10;
